@@ -1,4 +1,4 @@
-# Samples of "Multi-Tenant Management in HP OneCloud Platform" for IstioCon 2023
+# Samples of "Multi-Tenant Management in HP OneCloud Platform"
 
 - [Envoy Rate Limit](./samples/ratelimit)
 - [AuthenticationAndAuthorization](./samples/AuthenticationAndAuthorization)
