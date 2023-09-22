@@ -1,0 +1,14 @@
+apiVersion: telemetry.istio.io/v1alpha1
+kind: Telemetry
+metadata:
+  name: global-metrics
+  namespace: istio-system
+spec:
+  metrics:
+  - overrides:
+    - tagOverrides:
+        tenant_id:
+          operation: UPSERT
+          value: request.headers["tenant_id"] 
+    providers:
+    - name: prometheus

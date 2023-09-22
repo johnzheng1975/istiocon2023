@@ -1,0 +1,159 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: ef-ratelimit-pre-handle
+  namespace: istio-system
+spec:
+  priority: -200
+  configPatches:
+  - applyTo: HTTP_FILTER
+    match:
+      context: GATEWAY
+      listener:
+        filterChain:
+          filter:
+            name: "envoy.filters.network.http_connection_manager"
+            subFilter:
+              name: "envoy.filters.http.router"
+    patch:
+      operation: INSERT_BEFORE
+      value:
+       name: envoy.filters.http.lua
+       typed_config:
+          "@type": "type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua"
+          defaultSourceCode:
+            inlineString: |
+              -- This is for removing the string behind delimiter
+              function Split(s, delimiter)
+                  result = {};
+                  for match in (s..delimiter):gmatch("(.-)"..delimiter) do
+                      table.insert(result, match)
+                  end
+                  return result;
+              end
+
+              -- This is to conver string "xxx, yyy, zzz" into list.
+              function split_ip(str)
+                str_table = {};
+                for m in string.gmatch(str, '([^,]+)') do
+                  table.insert(str_table, m)
+                end
+                return str_table
+              end
+
+              -- This is for get project name from domain.
+              -- The host/path like http://svc01-project5.sample.sandbox-uw2.hponecloud.io/productpage"
+              function get_project(str)
+                str_svc_project = ""
+                str_project = ""
+                str_table = {}
+                for m in string.gmatch(str, '([^.]+)') do
+                  table.insert(str_table, m)
+                end
+                str_svc_project = str_table[1]
+
+                str_table = {}
+                for m2 in string.gmatch(str_svc_project, '([^-]+)') do
+                  table.insert(str_table, m2)
+                end
+                return str_table[#str_table]
+              end
+
+              function string.startswith(repl,start)
+                return string.sub(repl,1,string.len(start))==start
+              end
+
+ 
+
+              function envoy_on_request(request_handle)
+                request_handle:logInfo("******* Enter V0.1 Onecloud ratelimit pre-handle envoy_on_request ... ... ")
+                headers = request_handle:headers()
+                for key,value in pairs(headers) do request_handle:logInfo(key.." "..value) end
+
+                -- Define a list of partner cluster IP, if client IP is in this list, do not enable secure limit
+                secure_platform_ips = { ["54.148.85.56"]=true, ["3.120.217.35"]=true, ["15.65.244.13"]=true, ["192.168.1.61"]=true }
+
+                -- Assume only three projects enabled ratelimit, includes project1, project3, project5
+                project_enabled_ratelimit = { ["project1"]=true, ["project3"]=true, ["project5"]=true }
+
+                -- Assume tenant01 and tenant02 are premium tenant, the others are trial tenant
+                premium_tenants = { ["tenant01"]=true, ["tenant03"]=true }
+
+                remote_ip = ""
+                tenant_id = ""
+                level = ""
+                project = ""
+                path = ""
+                enable_ratelimit_business = ""
+                enable_ratelimit_secure = ""
+
+                -- Get remote_ip for ratelimit
+                ips = headers:get("x-forwarded-for")
+                if ips == nil then
+                  request_handle:logInfo("x-forwarded-for is null!")
+                else
+                  ip_tables = split_ip(ips)
+                  remote_ip = ip_tables[1]
+                end
+
+                -- If client IP belongs partner cluster IP list, do not enable secure ratelimit.
+                if secure_platform_ips[remote_ip] then
+                  enable_ratelimit_secure="false"
+                else
+                  enable_ratelimit_secure="true"
+                end
+
+                -- Get tenant_id for ratelimit
+                -- x-onecloud-tenant-id should from token. For demo purpose, get from http headers simply.
+                tenant_id = headers:get("x-onecloud-tenant-id")
+
+                -- Set a mock value for testing purpose.
+                if tenant_id == nil then
+                  tenant_id = "tenant_08"
+                end
+
+                -- Get tenant level for ratelimit, based on premium_tenants list
+                if premium_tenants[tenant_id] then
+                  level="premium"
+                else
+                  level="trial"
+                end
+
+                -- Get project from http header authority, like idp-lookup-auth.sample.sandbox-uw2.hponecloud.io
+                h_authority = ""
+                h_authority = headers:get(":authority")
+                project = get_project(h_authority)  
+
+                -- For API path like /resouce/123e4567-e89b-12d3-a456-426655440000, should change to /resouce/{uuid}. For ratelimit, they should be handle as same api.
+                h_path = ""
+                t_path = ""
+                -- For api with query string, "...?key1=value1&key2=value2", should remove "?key1=value1&key2=value2" for ratelimit_path
+                h_path = headers:get(":path")
+                t_path = Split(h_path, "?")
+                path = t_path[1]
+                path = string.gsub(path, "%w%w%w%w%w%w%w%w%-%w%w%w%w%-%w%w%w%w%-%w%w%w%w%-%w%w%w%w%w%w%w%w%w%w%w%w", "{uuid}")
+
+                -- Get whether enable business purpose ratelimit, based on project (You can also based on service/ api path here, if needed)
+                if project_enabled_ratelimit[project] then
+                  enable_ratelimit_business="true"
+                else
+                  enable_ratelimit_business="false"
+                end
+
+                -- Set headers for ratelimit
+                print("remote_ip: "..remote_ip)
+                print("tenant_id: "..tenant_id)
+                print("level: "..level)
+                print("project: "..project)
+                print("path: "..path)
+                print("enable_ratelimit_business: "..enable_ratelimit_business)
+                print("enable_ratelimit_secure: "..enable_ratelimit_secure)
+                request_handle:headers():add("ratelimit-source-ip", remote_ip)
+                request_handle:headers():add("ratelimit-tenantid", tenant_id)
+                request_handle:headers():add("ratelimit-level", level)
+                request_handle:headers():add("ratelimit-project", project)
+                request_handle:headers():add("ratelimit-path", path)
+                request_handle:headers():add("ratelimit-enabled-business", enable_ratelimit_business)
+                request_handle:headers():add("ratelimit-enabled-secure", enable_ratelimit_secure)
+
+              end

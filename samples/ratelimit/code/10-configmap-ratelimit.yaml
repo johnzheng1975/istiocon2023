@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ratelimit-config
+  namespace: ratelimit
+data:
+  config.yaml: |
+    domain: onecloud-ratelimit
+    descriptors:
+      # https://github.com/envoyproxy/ratelimit#descriptor-list-definition
+      - key: header_match
+        value: oc-ratelimit-enabled-business
+        descriptors:
+          - key: PROJECT
+            descriptors:
+             - key: PATH
+               descriptors:
+                 - key: METHOD
+                   descriptors:
+                     - key: TENANTID
+                       descriptors:
+                         - key: TLEVEL
+                           value: premium
+                           rate_limit:
+                             unit: minute
+                             requests_per_unit: 8
+                         - key: TLEVEL
+                           value: trial
+                           rate_limit:
+                             unit: minute
+                             requests_per_unit: 4
+      - key: header_match
+        value: oc-ratelimit-enabled-secure
+        descriptors:
+          - key: CLIENTIP
+            rate_limit:
+              unit: minute
+              requests_per_unit: 12

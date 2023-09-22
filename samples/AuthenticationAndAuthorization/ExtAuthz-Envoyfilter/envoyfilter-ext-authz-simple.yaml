@@ -1,0 +1,54 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: httpbin
+  namespace: foo
+spec:
+  workloadSelector:
+    labels:
+      app: httpbin
+  configPatches:
+  - applyTo: HTTP_FILTER
+    match:
+      context: SIDECAR_INBOUND
+      listener:
+        filterChain:
+          filter:
+            name: "envoy.filters.network.http_connection_manager"
+            subFilter:
+              name: "envoy.filters.http.router"
+    patch:
+      operation: INSERT_BEFORE
+      value:
+        name: "envoy.ext_authz"
+        typed_config:
+          "@type": type.googleapis.com/envoy.extensions.filters.http.ext_authz.v3.ExtAuthz
+          failure_mode_allow: false
+          transport_api_version: V3
+          grpc_service:
+            envoy_grpc:
+              cluster_name: patched.extauthz.foo.svc.cluster.local
+          with_request_body:
+            max_request_bytes: 1024
+            allow_partial_message: true
+            pack_as_bytes: false
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: ext-authz-cluster-patch
+  namespace: foo
+spec:
+  workloadSelector:
+    labels:
+      app: httpbin
+  configPatches:
+  - applyTo: CLUSTER
+    match:
+      cluster:
+        service: ext-authz.foo.svc.cluster.local
+        portNumber: 9000
+    patch:
+      operation: MERGE
+      value:
+        name: "patched.extauthz.foo.svc.cluster.local"            

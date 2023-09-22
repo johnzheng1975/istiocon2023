@@ -1,0 +1,53 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: filter-ratelimit-svc
+  namespace: istio-system
+spec:
+  workloadSelector:
+    labels:
+      istio: ingressgateway
+  configPatches:
+    - applyTo: VIRTUAL_HOST
+      match:
+        context: GATEWAY
+        routeConfiguration:
+          vhost:
+            name: ""
+            route:
+              action: ANY
+      patch:
+        operation: MERGE
+        # Applies the rate limit rules.
+        value:
+          rate_limits:          
+            - actions:
+              - header_value_match:
+                  descriptor_value: oc-ratelimit-enabled-business
+                  headers:
+                    - name: ratelimit-enabled-business
+                      exact_match: "true"
+              - request_headers:
+                  header_name: "ratelimit-project"
+                  descriptor_key: "PROJECT"
+              - request_headers:
+                  header_name: "ratelimit-path"
+                  descriptor_key: "PATH"
+              - request_headers:
+                  header_name: ":method"
+                  descriptor_key: "METHOD"
+              - request_headers:
+                  header_name: "ratelimit-tenantid"
+                  descriptor_key: "TENANTID"
+              - request_headers:
+                  header_name: "ratelimit-level"
+                  descriptor_key: "TLEVEL"
+            - actions:
+              - header_value_match:
+                  descriptor_value: oc-ratelimit-enabled-secure
+                  headers:
+                    - name: ratelimit-enabled-secure
+                      exact_match: "true"
+              - request_headers:
+                  header_name: "ratelimit-source-ip"
+                  descriptor_key: "CLIENTIP"
