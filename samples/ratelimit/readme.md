@@ -1,9 +1,9 @@
 ## Before you begin
 
 1. Setup Istio in a Kubernetes cluster by following the instructions in the
-   [Installation Guide](https://istio.io/v1.9/docs/setup/getting-started/).
+   [Installation Guide](https://istio.io/latest/docs/setup/getting-started/).
 
-1. Deploy the [Bookinfo](https://istio.io/v1.9//docs/examples/bookinfo/) sample application.
+1. Deploy the [Bookinfo](https://istio.io/latest//docs/examples/bookinfo/) sample application.
 
 
 ## Envoy RateLimit Architecture
