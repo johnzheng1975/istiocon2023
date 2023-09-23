@@ -137,6 +137,8 @@ We have below two requirements:
 
 #### Test Scenario 01: Business ratelimit for premium tenants
 ```
+# project1 is in projects enabled list, so busniness ratelimit is enabled.
+# tenant01 is in premium_tenants list, so ratelimit value is 8.
 $ for i in {1..9}; do curl -I "http://svc11-project1.sample.sandbox-uw2.hponecloud.io/productpage" -H "X-OneCloud-Tenant-ID: tenant01"; done;
 
 # First 8 times, return 200
@@ -161,6 +163,8 @@ x-ratelimit-reset: 21
 
 #### Test Scenario 02: Business ratelimit for trial tenants
 ```
+# project1 is in projects enabled list, so busniness ratelimit is enabled.
+# tenant02 is not in premium_tenants list, so ratelimit value is 4.
 $ for i in {1..5}; do curl -I "http://svc11-project1.sample.sandbox-uw2.hponecloud.io/productpage" -H "X-OneCloud-Tenant-ID: tenant02"; done;
 
 # First 4 times, return 200
@@ -183,9 +187,11 @@ x-ratelimit-reset: 16
   
 #### Test Scenario 03: Secure ratelimit only
 ```
-# This client IP is not in partner cluster IP list.
+# This client IP is not in partner cluster IP list. Secure ratelimit is enabled.
 $ curl ifconfig.io
 192.168.52.62
+
+# project16 is not in projects enabled list, so busniness ratelimit is not enabled.
 $ for i in {1..15}; do curl -I "http://svc2-project16.sample.sandbox-uw2.hponecloud.io/productpage" -H "X-OneCloud-Tenant-ID: tenant03"; done;
 
 # First 12 times, return 200
