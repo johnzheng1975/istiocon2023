@@ -36,6 +36,7 @@ backend, is used below.
   envoyfilter.networking.istio.io/filter-ratelimit-svc created
   envoyfilter.networking.istio.io/ef-ratelimit-pre-handle created
   ```
+- Test result is expected.
 
 ### Requirements
 We have below two requirements:
