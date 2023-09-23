@@ -217,6 +217,7 @@ x-ratelimit-reset: 32
 
 #### Test Scenario 04: Both `Secure ratelimit` and `Business ratelimit` are disabled
 ```
+# This client IP is in partner cluster IP list. Secure ratelimit is not enabled.
 $ curl ifconfig.io
 15.65.244.13
 
@@ -250,17 +251,21 @@ $ k exec -ti -n ratelimit      redis-7bd7d98b4c-k6tgf   -- redis-cli
 127.0.0.1:6379> FLUSHALL
 OK
 
-
+# This client IP is not in partner cluster IP list. Secure ratelimit is enabled.
 $ curl ifconfig.io
 192.56.99.13
 
+# project5 is in projects enabled list, so busniness ratelimit is enabled.
+# tenant01 is in premium_tenants list, so ratelimit value is 8.
 $ for i in {1..9}; do curl -I "http://svc2-project5.sample.sandbox-uw2.hponecloud.io/productpage" -H "X-OneCloud-Tenant-ID: tenant01"; done;
+
 # Eight requests return 200
 HTTP/1.1 200 OK
 # The ninth request return 429
 HTTP/1.1 429 Too Many Requests
 
-
+# project5 is in projects enabled list, so busniness ratelimit is enabled.
+# tenant03 is in premium_tenants list, so ratelimit value is 8.
 $ for i in {1..8}; do curl -I "http://svc2-project5.sample.sandbox-uw2.hponecloud.io/productpage" -H "X-OneCloud-Tenant-ID: tenant03"; done;
 # The first three requests are 200
 HTTP/1.1 200 OK
