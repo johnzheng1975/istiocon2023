@@ -221,6 +221,7 @@ x-ratelimit-reset: 32
 $ curl ifconfig.io
 15.65.244.13
 
+# project8 is not in projects enabled list, so busniness ratelimit is not enabled.
 $ for i in {1..30}; do curl -I "http://svc11-project8.sample.sandbox-uw2.hponecloud.io/productpage" -H "X-OneCloud-Tenant-ID: tenant01"; done
 
 # All return 200
