@@ -1,4 +1,12 @@
-## Architecture
+## Before you begin
+
+1. Setup Istio in a Kubernetes cluster by following the instructions in the
+   [Installation Guide](https://istio.io/v1.9/docs/setup/getting-started/).
+
+1. Deploy the [Bookinfo](https://istio.io/v1.9//docs/examples/bookinfo/) sample application.
+
+
+## Envoy RateLimit Architecture
 
 Envoy can be used to [set up global rate limits](https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/other_features/global_rate_limiting) for your mesh.
 Global rate limiting in Envoy uses a gRPC API for requesting quota from a rate limiting service.
@@ -8,15 +16,26 @@ backend, is used below.
 ![alt text](./ratelimit-redis.png)
 
 
-
 ## Quick Start
 - Go through https://istio.io/latest/docs/tasks/policy-enforcement/rate-limit/
 
 ## Further Practice
 - Go through https://github.com/johnzheng1975/istio-ratelimit-example
 
-## Best Practice
+## Best Practice as HP OneCloud
 - Apply `./code` here.
+  ```
+  $ kubectl apply -f ./code
+  namespace/ratelimit created
+  configmap/ratelimit-config created
+  service/redis created
+  deployment.apps/redis created
+  service/ratelimit created
+  deployment.apps/ratelimit created
+  envoyfilter.networking.istio.io/filter-ratelimit created
+  envoyfilter.networking.istio.io/filter-ratelimit-svc created
+  envoyfilter.networking.istio.io/ef-ratelimit-pre-handle created
+  ```
 
 ### Requirements
 We have below two requirements:
