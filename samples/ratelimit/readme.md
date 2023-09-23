@@ -183,6 +183,7 @@ x-ratelimit-reset: 16
   
 #### Test Scenario 03: Secure ratelimit only
 ```
+# This client IP is not in partner cluster IP list.
 $ curl ifconfig.io
 192.168.52.62
 $ for i in {1..15}; do curl -I "http://svc2-project16.sample.sandbox-uw2.hponecloud.io/productpage" -H "X-OneCloud-Tenant-ID: tenant03"; done;
