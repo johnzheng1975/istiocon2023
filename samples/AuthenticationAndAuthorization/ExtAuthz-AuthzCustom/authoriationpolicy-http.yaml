@@ -1,7 +1,8 @@
 apiVersion: security.istio.io/v1
 kind: AuthorizationPolicy
 metadata:
-  name: ext-authz
+  name: ext-authz-http
+  namespace: foo
 spec:
   selector:
     matchLabels:
