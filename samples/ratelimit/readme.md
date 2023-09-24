@@ -131,10 +131,43 @@ We have below two requirements:
     premium_tenants = { ["tenant01"]=true, ["tenant03"]=true }
   ```
 
+
+### Debug
+- For better understanding, this sample enabled debug mode for ratelimit envoyfilter. The client can get response header like:
+  ```
+  HTTP/1.1 200 OK
+  ... ...
+  x-ratelimit-limit: 12, 12;w=60   # The limit is 12/min
+  x-ratelimit-remaining: 3         # The remaining access count is 3 in this minute 
+  x-ratelimit-reset: 2             # The remaining value will be reset to 12 after 2 seconds.
+  ```
+- For better understanding, you can enable ingressgateway pod log.
+  ```
+  $ kubectl exec -ti -n istio-system istio-ingressgateway-7485484874-rw4nm -- curl -XPOST localhost:15000/logging?lua=debug
+  $ curl -I "http://svc11-project2.sample.sandbox-uw2.hponecloud.io/productpage" -H "X-OneCloud-Tenant-ID: tenant01";
+  $ kubectl logs -n istio-system istio-ingressgateway-7485484874-rw4nm -f
+  ... ...
+  remote_ip: 192.168.52.62
+  tenant_id: tenant01
+  level: premium
+  project: project2
+  path: /productpage
+  enable_ratelimit_business: false
+  enable_ratelimit_secure: true
+  ```
+- For better understanding, you can view the values in redis:
+  ```
+  $ kubectl exec -ti -n ratelimit redis-7bd7d98b4c-4wpn7  -- redis-cli
+  127.0.0.1:6379> KEYS *
+  1) "onecloud-ratelimit_header_match_oc-ratelimit-enabled-secure_CLIENTIP_192.168.52.62_1695543780"
+  127.0.0.1:6379> GET "onecloud-ratelimit_header_match_oc-ratelimit-enabled-secure_CLIENTIP_192.168.52.62_1695543780"
+  "9"
+  ```
+
 ### Test Result
 - Note:
-  - For below testing, you need care x-ratelimit-reset in http response, make sure run testing within one minute. Otherwise, it may inaccurate because of ratelimit reset.
-  - This is AWS example, you need set route53 record, create record, point "*.sample.sandbox-uw2.hponecloud.io" to "aadadf0fd85374ecca2d5256a064d3b7-1498085909.us-east-1.elb.amazonaws.com" before testing.
+  - For below testing, you need care x-ratelimit-reset in http response, make sure run testing within one minute. Otherwise, it may inaccurate because of ratelimit resetting.
+  - This is an AWS example, you need create route53 record, point "*.sample.sandbox-uw2.hponecloud.io" to "aadadf0fd85374ecca2d5256a064d3b7-1498085909.us-east-1.elb.amazonaws.com" before testing.
 
 #### Test Scenario 01: Business ratelimit for premium tenants
 ```
