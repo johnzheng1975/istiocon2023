@@ -62,7 +62,6 @@ First, you need to deploy ext-authz envoyfilter.
       envoyfilter.networking.istio.io/httpbin created
       envoyfilter.networking.istio.io/ext-authz-cluster-patch created
     ```
-  
 
 ## Test
 Here is test result:
@@ -105,6 +104,8 @@ Here is test result:
       "url": "http://httpbin.foo:8000/post"
     }
     ```
+## Enabled Debug And Test again
+- In order to better understand how it works, suggest you [enable debug](https://github.com/johnzheng1975/istiocon2023/tree/main/samples/AuthenticationAndAuthorization#enable-debug-before-go-through-samples) for below `Advanaced usage` try.
 
 ## Advanced usage
 
