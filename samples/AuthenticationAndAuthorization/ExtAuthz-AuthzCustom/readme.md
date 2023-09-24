@@ -15,9 +15,7 @@ This sample is about External Authorization usage.
         envoyExtAuthzGrpc:
           service: "ext-authz.foo.svc.cluster.local"
           port: "9000"
-          includeRequestHeadersInCheck: ["x-ext-authz"]  # Not useful, no matter set or not set.
-          headersToUpstreamOnAllow: ["abc"]   # Not useful, no matter set or not set.
-          includeRequestBodyInCheck:  # Useful.
+          includeRequestBodyInCheck:
             maxRequestBytes: 1000000
             allowPartialMessage: false
             packAsBytes: false
@@ -25,9 +23,9 @@ This sample is about External Authorization usage.
         envoyExtAuthzHttp:
           service: "ext-authz.foo.svc.cluster.local"
           port: "8000"
-          includeRequestHeadersInCheck: ["x-ext-authz", "baz"]   # Useful.
-          headersToUpstreamOnAllow: ["x-ext-authz-check-received"]   # Useful.
-          includeRequestBodyInCheck:   # Useful.
+          includeRequestHeadersInCheck: ["x-ext-authz", "baz"]
+          headersToUpstreamOnAllow: ["x-ext-authz-check-received"]
+          includeRequestBodyInCheck:
             maxRequestBytes: 1000000
             allowPartialMessage: true
             packAsBytes: false
