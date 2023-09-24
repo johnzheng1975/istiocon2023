@@ -10,7 +10,7 @@ spec:
   provider:
     # The provider name must match the extension provider defined in the mesh config.
     # You can also replace this with sample-ext-authz-http to test the other external authorizer definition.
-    name: sample-ext-authz-grpc
+    name: sample-ext-authz-http
   rules:
   # The rules specify when to trigger the external authorizer.
   - to:
