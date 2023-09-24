@@ -68,7 +68,7 @@ This sample is about customize logs, adding tenant_id, grpc_status.
 
 1. Set ingressgateway pod lua log level to debug, open a window to view the log:
    ```
-   $ kubectl exec -ti -n is istio-ingressgateway-7485484874-gzz9s  -- curl -XPOST localhost:15000/logging?lua=debug
+   $ kubectl exec -ti -n istio-system istio-ingressgateway-7485484874-gzz9s  -- curl -XPOST localhost:15000/logging?lua=debug
    $ kubectl logs -n istio-system istio-ingressgateway-7485484874-gzz9s -f
    ```
 
