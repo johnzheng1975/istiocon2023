@@ -59,7 +59,7 @@ First, you need to deploy ext-authz envoyfilter.
 1. Run the command to deploy:
 
     ```
-    $ kubectl apply -f ./envoyfilter-ext-authz-grpcservice.yaml
+    ~/istiocon2023/samples/AuthenticationAndAuthorization/ExtAuthz-Envoyfilter$  kubectl create -f ./envoyfilter-ext-authz-grpcservice.yaml
       envoyfilter.networking.istio.io/httpbin created
       envoyfilter.networking.istio.io/ext-authz-cluster-patch created
     ```
@@ -121,7 +121,7 @@ First, you need to deploy ext-authz envoyfilter.
 1. Run the command to deploy:
 
     ```
-    $ kubectl apply -f ./envoyfilter-ext-authz-httpservice.yaml
+    ~/istiocon2023/samples/AuthenticationAndAuthorization/ExtAuthz-Envoyfilter$  kubectl create -f ./envoyfilter-ext-authz-httpservice.yaml
     ```
 
 ### Test
@@ -137,7 +137,31 @@ Here is test result:
 1. Verify a request to path `/headers` with header `x-ext-authz: allow` is allowed by the sample `ext_authz` server:
     ```
     $ kubectl exec "$(kubectl get pod -l app=sleep -n foo -o jsonpath={.items..metadata.name})" -c sleep -n foo -- curl -XPOST "http://httpbin.foo:8000/post" -H "x-ext-authz: allow" -H "key2: value2" --header 'Content-Type: text/plain' --data '1234567890111111'
-
+    {
+      "args": {},
+      "data": "1234567890111111",
+      "files": {},
+      "form": {},
+      "headers": {
+        "Accept": "*/*",
+        "Content-Length": "16",
+        "Content-Type": "text/plain",
+        "Host": "httpbin.foo:8000",
+        "Key2": "value2",
+        "User-Agent": "curl/8.3.0",
+        "X-B3-Parentspanid": "53af88335d8fd629",
+        "X-B3-Sampled": "0",
+        "X-B3-Spanid": "919bd65cad8a6c46",
+        "X-B3-Traceid": "1ad87712ed05cce053af88335d8fd629",
+        "X-Envoy-Attempt-Count": "1",
+        "X-Ext-Authz": "allow",
+        "X-Ext-Authz-Check-Received": "POST httpbin.foo:8000/post, headers: map[Content-Length:[0] X-B3-Parentspanid:[ee9025124c57e4f8] X-B3-Sampled:[0] X-B3-Spanid:[601a5da7857a2948] X-B3-Traceid:[1ad87712ed05cce053af88335d8fd629] X-Envoy-Expected-Rq-Timeout-Ms:[10000] X-Envoy-Internal:[true] X-Ext-Authz:[allow] X-Forwarded-Client-Cert:[By=spiffe://cluster.local/ns/foo/sa/default;Hash=624e241c728de3629ba18b36893e5c660f59fa480c45af049e674088dbaa5b28;Subject=\"\";URI=spiffe://cluster.local/ns/foo/sa/httpbin] X-Forwarded-For:[192.168.5.36] X-Forwarded-Proto:[https] X-Request-Id:[61d5803b-77af-4650-a4b9-6b28b26704a2]], body: []",
+        "X-Forwarded-Client-Cert": "By=spiffe://cluster.local/ns/foo/sa/httpbin;Hash=8de6d8ab8563b4495e9635886014ced414ba6b0d66f0e32966e7ca919106183c;Subject=\"\";URI=spiffe://cluster.local/ns/foo/sa/sleep"
+      },
+      "json": 1234567890111111,
+      "origin": "127.0.0.6",
+      "url": "http://httpbin.foo:8000/post"
+    }
     ```
 
 ### Clean up
@@ -192,7 +216,9 @@ Here are some thoughts/ tips for ext-authz envoyfilter:
 
 ## Envoyfilter sample
 
-1. Simple grpc_service
+### Simple grpc_service
+- Body will be forwarded to external authorizer.
+- All headers will be forwarded to external authorizer.
 ```
 $ cat envoyfilter-ext-authz-simple.yaml
 apiVersion: networking.istio.io/v1alpha3
@@ -249,9 +275,13 @@ spec:
       operation: MERGE
       value:
         name: "patched.extauthz.foo.svc.cluster.local"
+
 ```
 
-2. http_service
+### http_service
+- Body will be forwarded to external authorizer.
+- Headers defined in `allowed_headers` will be forwarded to external authorizer.
+- Headers defined in `allowed_upstream_headers` will be forwarded to httpbin from external authorizer.
 ```
 $ cat envoyfilter-ext-authz-httpservice.yaml
 apiVersion: networking.istio.io/v1alpha3
@@ -294,6 +324,7 @@ spec:
               allowed_upstream_headers:
                 patterns:
                 - exact: "abc"
+                - exact: "x-ext-authz-check-received"
 
 ```
 
