@@ -119,7 +119,7 @@ We have below two requirements:
 
 - This code structure is simple, easy to maintain.
   - 00, 10, 20, 30, 40 need not change.
-  - Only some variable in 50-ef-ratelimit-pre-handle.yaml need be changed， based on requirments change, as below:
+  - Only some variable in 50-ef-ratelimit-pre-handle.yaml need be changed，when requirments change, as below:
   ```
     -- Define a list of partner cluster IP, if client IP is in this list, do not enable secure limit
     secure_platform_ips = { ["54.148.85.56"]=true, ["3.120.217.35"]=true, ["15.65.244.13"]=true, ["192.168.1.61"]=true }
