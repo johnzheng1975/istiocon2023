@@ -4,9 +4,9 @@ This sample is about ext-authz envoyfilter usage.
 
 Before you begin this task, do the following:
 
-* Read the [Istio authorization concepts](/docs/concepts/security/#authorization).
+* Read the [Istio authorization concepts](https://istio.io/latest/docs/concepts/security/#authorization).
 
-* Follow the [Istio installation guide](/docs/setup/install/istioctl/) to install Istio.
+* Follow the [Istio installation guide](https://istio.io/latest/docs/setup/install/istioctl/) to install Istio.
 
 * Deploy test workloads:
 
