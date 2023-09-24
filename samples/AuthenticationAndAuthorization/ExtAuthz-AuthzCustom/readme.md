@@ -4,7 +4,8 @@ This sample is about External Authorization usage.
 * Please refer to: https://istio.io/latest/docs/tasks/security/authorization/authz-custom/
 
 ## Go through this example 
-1. Edit istio mesh configmap. 
+1. Edit istio mesh configmap.
+
   ```
   # kubectl edit configmap -n istio-system istio
     
@@ -33,6 +34,7 @@ This sample is about External Authorization usage.
   ```
 
 1. Apply authoriationpolicy-grpc.yaml
+
   ```
   kubectl create -f authoriationpolicy-grpc.yaml
   ```
