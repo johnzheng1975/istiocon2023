@@ -132,8 +132,9 @@ We have below two requirements:
   ```
 
 ### Test Result
-- Note: for below testing, you need care x-ratelimit-reset in http response, make sure run testing within one minute. Otherwise, it may inaccurate because of ratelimit reset.
-- This is AWS example, you need set route53 record, create record, point "*.sample.sandbox-uw2.hponecloud.io" to "aadadf0fd85374ecca2d5256a064d3b7-1498085909.us-east-1.elb.amazonaws.com" before testing.
+- Note:
+  - For below testing, you need care x-ratelimit-reset in http response, make sure run testing within one minute. Otherwise, it may inaccurate because of ratelimit reset.
+  - This is AWS example, you need set route53 record, create record, point "*.sample.sandbox-uw2.hponecloud.io" to "aadadf0fd85374ecca2d5256a064d3b7-1498085909.us-east-1.elb.amazonaws.com" before testing.
 
 #### Test Scenario 01: Business ratelimit for premium tenants
 ```
