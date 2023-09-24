@@ -37,7 +37,23 @@ This sample is about External Authorization usage.
   kubectl create -f authoriationpolicy-grpc.yaml -n foo
   ```
 
-3. Test
+3. Test (From result, you can find `POST httpbin.foo:9000` which is ext-authz grpc port)
+  ```
+  # deny case 
+  $ kubectl exec "$(kubectl get pod -l app=sleep -n foo -o jsonpath={.items..metadata.name})" -c sleep -n foo -- curl -XPOST "http://httpbin.foo:8000/post" -H "x-ext-authz: deny" -H "key2: value2" --header 'Content-Type: text/plain' --data '1234567890111111'
+  
+  # allow case
+  $ kubectl exec "$(kubectl get pod -l app=sleep -n foo -o jsonpath={.items..metadata.name})" -c sleep -n foo -- curl -XPOST "http://httpbin.foo:8000/post" -H "x-ext-authz: allow" -H "key2: value2" --header 'Content-Type: text/plain' --data '1234567890111111'
+  ```
+
+5. Use authoriationpolicy-http.yaml
+
+  ```
+  kubectl delete -f authoriationpolicy-grpc.yaml -n foo
+  kubectl create -f authoriationpolicy-http.yaml -n foo
+  ```
+
+6. Test (From result, you can find `POST httpbin.foo:8000` which is ext-authz http port)
   ```
   # deny case 
   $ kubectl exec "$(kubectl get pod -l app=sleep -n foo -o jsonpath={.items..metadata.name})" -c sleep -n foo -- curl -XPOST "http://httpbin.foo:8000/post" -H "x-ext-authz: deny" -H "key2: value2" --header 'Content-Type: text/plain' --data '1234567890111111'
