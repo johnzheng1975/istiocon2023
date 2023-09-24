@@ -33,16 +33,20 @@ This sample is about External Authorization usage.
             packAsBytes: false
   ```
 
-1. Apply authoriationpolicy-grpc.yaml
+2. Apply authoriationpolicy-grpc.yaml
 
   ```
-  kubectl create -f authoriationpolicy-grpc.yaml
+  kubectl create -f authoriationpolicy-grpc.yaml -n foo
   ```
 
-1. Test
-```
-kubectl create -f authoriationpolicy-grpc.yaml
-```
+3. Test
+  ```
+  # deny case 
+  $ kubectl exec "$(kubectl get pod -l app=sleep -n foo -o jsonpath={.items..metadata.name})" -c sleep -n foo -- curl -XPOST "http://httpbin.foo:8000/post" -H "x-ext-authz: deny" -H "key2: value2" --header 'Content-Type: text/plain' --data '1234567890111111'
+  
+  # allow case
+  $ kubectl exec "$(kubectl get pod -l app=sleep -n foo -o jsonpath={.items..metadata.name})" -c sleep -n foo -- curl -XPOST "http://httpbin.foo:8000/post" -H "x-ext-authz: allow" -H "key2: value2" --header 'Content-Type: text/plain' --data '1234567890111111'
+  ```
 
 ## Best Practice
 Here are some thoughts/ tips for ext-authz envoyfilter:
