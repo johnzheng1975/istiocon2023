@@ -321,3 +321,18 @@ x-ratelimit-reset: 10
     - For later eight tenant03 requests, its business limit rest remaining to 8 again, so it return 200 again for first three requests.
     - For fourth tenant03 requests, its secure ratelimit reach 12 (9 + 4 > 12), so return 429 again.
   - Test result is correct.
+
+## Clean up
+- You can clean up like below.
+  ```
+  ~/istiocon2023/samples/ratelimit$ kubectl delete -f ./code
+  namespace "ratelimit" deleted
+  configmap "ratelimit-config" deleted
+  service "redis" deleted
+  deployment.apps "redis" deleted
+  service "ratelimit" deleted
+  deployment.apps "ratelimit" deleted
+  envoyfilter.networking.istio.io "filter-ratelimit" deleted
+  envoyfilter.networking.istio.io "filter-ratelimit-svc" deleted
+  envoyfilter.networking.istio.io "ef-ratelimit-pre-handle" deleted
+  ```
