@@ -4,7 +4,7 @@
 
 ## Enable Debug Before Go Through Samples
 - Suggest you apply debug envoyfilter, to show all http request/response headers/body for ext-authz pod. This can make you better understand, about how "ext-auth envoyfilter" and "External Authorization" works.
-- Here are commond:
+- Here are commond, please run it after namespaces & app created.
   ```
   # Apply debug envoyfilter, which will print out all request/response headers/body, no matter it is http or grpc.
   kubectl apply -f ./envoyfilter-show_RequestsResponse.yaml
