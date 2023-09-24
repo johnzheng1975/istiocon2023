@@ -1,5 +1,5 @@
 ## Introduction
-- For ext-auth envoyfilter / External Authorization, current samples is not much.
+- For ext-auth envoyfilter / External Authorization, current samples is not much on internet.
 - Here created samples for them, it not only includes simple "Get started",but also includes our experience and lessons learned.
 
 ## Enable Debug Before Go Through Samples
