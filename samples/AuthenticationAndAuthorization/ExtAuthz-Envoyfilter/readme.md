@@ -111,16 +111,16 @@ Here is test result:
 
 Here are some thoughts/ tips for ext-authz envoyfilter:
 
-1. For details of envoyfilter, please refer to:
+1. For technical details for envoy ext-authz envoyfilter, you can refer to:
    https://www.envoyproxy.io/docs/envoy/latest/api-v3/extensions/filters/http/ext_authz/v3/ext_authz.proto#envoy-v3-api-msg-extensions-filters-http-ext-authz-v3-extauthz
 
 2. You can use grpc_service or http_service for external authorizer.
 
-3. External authorizer can return allow or deny based on request headers, headers need be forwarded to External authorizer
-   - For http_service, need put necessary headers in allowed_headers. The others will not be forwarded.
+3. External authorizer can return allow or deny based on request headers. So http headers need be forwarded to External authorizer.
+   - For http_service, for headers need be forwareded, please them in allowed_headers. Otherwise, will not be forwarded.
    - For grpc_service, all headers will be forwarded if allowed_headers is not defined. However, if allowed_headers is defined, the other headers will not be forwarded.
 
-4. External authorizer can return allow or deny based on request body, if you define below, it works for both grpc_service and http_service
+4. External authorizer can return allow or deny based on request body. Below works for both grpc_service and http_service
 
    ```
         typed_config:
@@ -142,9 +142,9 @@ Here are some thoughts/ tips for ext-authz envoyfilter:
      "dynamic_metadata_from_headers": {...}
    ```
 
-   It can remove some unnecessary big headers X-Ext-Authz-Check-Received.
+   It can remove some unnecessary big headers like X-Ext-Authz-Check-Received, and improve performance.
 
-6. For grpc_service, it does not support AuthorizationResponse definition
+6. For grpc_service, it does not support AuthorizationResponse definition. 
 
 
 
