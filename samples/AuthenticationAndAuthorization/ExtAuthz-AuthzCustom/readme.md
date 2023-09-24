@@ -3,7 +3,8 @@ This sample is about External Authorization usage.
 ## Quick Start
 * Please refer to: https://istio.io/latest/docs/tasks/security/authorization/authz-custom/
 
-## Go through this example, through changing the istio configmap.
+## Go through this example 
+1. Edit istio mesh configmap. 
 ```
 # kubectl edit configmap -n istio-system istio
   
@@ -29,6 +30,16 @@ This sample is about External Authorization usage.
           maxRequestBytes: 1000000
           allowPartialMessage: true
           packAsBytes: false
+```
+
+1. Apply authoriationpolicy-grpc.yaml
+```
+kubectl create -f authoriationpolicy-grpc.yaml
+```
+
+1. Apply authoriationpolicy-grpc.yaml
+```
+kubectl create -f authoriationpolicy-grpc.yaml
 ```
 
 ## Best Practice
