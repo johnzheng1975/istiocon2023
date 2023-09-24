@@ -74,6 +74,7 @@ This sample is about customize logs, adding tenant_id, grpc_status.
 
 1. Send a http request with tenant_id in header, you can find access log include `grpc_status_number` and `tenant_id`.
    ```
+   # Please put your istio-ingressgateway service loadbalancer domain before run curl.
    $ curl a37a73937493a427db222f8deecd65ca-1310205472.us-east-1.elb.amazonaws.com/productpage -H "TENANT_ID: tenant-00001"
 
    $ Log found in istio-ingressgateway-7485484874-gzz9s pod:
