@@ -1,16 +1,12 @@
-## Purpose
-- Introduce two samples 
-  - ext-auth envoyfilter
-  - External Authorization
-
-- It includes simple "Get started", also includes our experience and lessons learned.
+## Introduction
+- For ext-auth envoyfilter / External Authorization, current samples is not much.
+- Here created samples for them, it not only includes simple "Get started",but also includes our experience and lessons learned.
 
 ## Enable Debug Before Go Through Samples
-- Suggest you apply debug envoyfilter, to show all http request/response headers/body for ext-authz pod.
-- This can make you better understand, about how "ext-auth envoyfilter" and "External Authorization" works.
+- Suggest you apply debug envoyfilter, to show all http request/response headers/body for ext-authz pod. This can make you better understand, about how "ext-auth envoyfilter" and "External Authorization" works.
 - Here are commond:
   ```
-  # Apply debug envoyfilter
+  # Apply debug envoyfilter, which will print out all request/response headers/body, no matter it is http or grpc.
   kubectl apply -f ./envoyfilter-show_RequestsResponse.yaml
   
   # After you create ext-authz pod in sample, you can open another window to view log:  
