@@ -243,6 +243,14 @@ Here are some thoughts/ tips for ext-authz envoyfilter:
    $ kubectl exec "$(kubectl get pod -l app=sleep -n foo -o jsonpath={.items..metadata.name})" -c sleep -n foo -- curl -XPOST "http://httpbin.foo:8000/post" -H "x-ext-authz: allow" -H "key2: value2" --header 'Content-Type: text/plain' --data '1234567890111111'
    ```
 
+## Clean up
+
+1. Remove the namespace `foo` from your configuration:
+
+    ```
+    $ kubectl delete namespace foo
+    ```
+
 ## Introduction from Istio developer
 - Video 
   * https://www.youtube.com/watch?v=BSmckzCAuk8
