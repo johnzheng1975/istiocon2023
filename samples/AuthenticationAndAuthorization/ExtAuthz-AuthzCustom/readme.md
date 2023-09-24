@@ -7,30 +7,28 @@ This sample is about External Authorization usage.
 ```
 # kubectl edit configmap -n istio-system istio
   
-   mesh: |-
-     extensionProviders:
-     - name: "sample-ext-authz-grpc"
-       envoyExtAuthzGrpc:
-         service: "ext-authz.foo.svc.cluster.local"
-         port: "9000"
-         includeRequestHeadersInCheck: ["x-ext-authz"]  # Not useful, no matter set or not set.
-         headersToUpstreamOnAllow: ["abc"]   # Not useful, no matter set or not set.
-         includeRequestBodyInCheck:  # Useful.
-           maxRequestBytes: 1000000
-           allowPartialMessage: false
-           packAsBytes: false
-     - name: "sample-ext-authz-http"
-       envoyExtAuthzHttp:
-         service: "ext-authz.foo.svc.cluster.local"
-         port: "8000"
-         includeRequestHeadersInCheck: ["x-ext-authz", "baz"]   # Useful.
-         headersToUpstreamOnAllow: ["x-ext-authz-check-received"]   # Useful.
-         includeRequestBodyInCheck:   # Useful.
-           maxRequestBytes: 1000000
-           allowPartialMessage: true
-           packAsBytes: false
- 
-
+  mesh: |-
+    extensionProviders:
+    - name: "sample-ext-authz-grpc"
+      envoyExtAuthzGrpc:
+        service: "ext-authz.foo.svc.cluster.local"
+        port: "9000"
+        includeRequestHeadersInCheck: ["x-ext-authz"]  # Not useful, no matter set or not set.
+        headersToUpstreamOnAllow: ["abc"]   # Not useful, no matter set or not set.
+        includeRequestBodyInCheck:  # Useful.
+          maxRequestBytes: 1000000
+          allowPartialMessage: false
+          packAsBytes: false
+    - name: "sample-ext-authz-http"
+      envoyExtAuthzHttp:
+        service: "ext-authz.foo.svc.cluster.local"
+        port: "8000"
+        includeRequestHeadersInCheck: ["x-ext-authz", "baz"]   # Useful.
+        headersToUpstreamOnAllow: ["x-ext-authz-check-received"]   # Useful.
+        includeRequestBodyInCheck:   # Useful.
+          maxRequestBytes: 1000000
+          allowPartialMessage: true
+          packAsBytes: false
 ```
 
 ## Introduction from its developer
