@@ -37,4 +37,5 @@ spec:
             authorization_response:
               allowed_upstream_headers:
                 patterns:
-                - exact: "abc"          
+                - exact: "abc"
+                - exact: "x-ext-authz-check-received"

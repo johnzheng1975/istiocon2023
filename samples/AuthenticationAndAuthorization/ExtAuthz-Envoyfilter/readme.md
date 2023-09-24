@@ -51,19 +51,20 @@ First, you need to deploy the external authorizer. For this, you will simply dep
     2021/01/07 22:55:47 Starting gRPC server at [::]:9000
     ```
 
-## Deploy the ext-authz envoyfilter
+## grpcservice envoyfilter
+### Deploy the ext-authz envoyfilter (grpcservice)
 
 First, you need to deploy ext-authz envoyfilter.
 
 1. Run the command to deploy:
 
     ```
-    $ kubectl apply -f ./envoyfilter-ext-authz-simple.yaml
+    $ kubectl apply -f ./envoyfilter-ext-authz-grpcservice.yaml
       envoyfilter.networking.istio.io/httpbin created
       envoyfilter.networking.istio.io/ext-authz-cluster-patch created
     ```
 
-## Test
+### Test
 Here is test result:
 
 1. Verify a request to path `/post` with header `x-ext-authz: deny` is denied by the sample `ext_authz` server:
@@ -104,6 +105,47 @@ Here is test result:
       "url": "http://httpbin.foo:8000/post"
     }
     ```
+
+### Clean up
+    ```
+    $ kubectl delete -f ./envoyfilter-ext-authz-grpcservice.yaml
+    envoyfilter.networking.istio.io "httpbin" deleted
+    envoyfilter.networking.istio.io "ext-authz-cluster-patch" deleted
+    ```
+
+## httpservice envoyfilter
+### Deploy the ext-authz envoyfilter (httpservice)
+
+First, you need to deploy ext-authz envoyfilter.
+
+1. Run the command to deploy:
+
+    ```
+    $ kubectl apply -f ./envoyfilter-ext-authz-httpservice.yaml
+    ```
+
+### Test
+Here is test result:
+
+1. Verify a request to path `/post` with header `x-ext-authz: deny` is denied by the sample `ext_authz` server:
+
+    ```
+    $ kubectl exec "$(kubectl get pod -l app=sleep -n foo -o jsonpath={.items..metadata.name})" -c sleep -n foo -- curl -XPOST "http://httpbin.foo:8000/post" -H "x-ext-authz: deny" -H "key2: value2" --header 'Content-Type: text/plain' --data '1234567890111111'
+    denied by ext_authz for not found header `x-ext-authz: allow` in the request
+    ```
+
+1. Verify a request to path `/headers` with header `x-ext-authz: allow` is allowed by the sample `ext_authz` server:
+    ```
+    $ kubectl exec "$(kubectl get pod -l app=sleep -n foo -o jsonpath={.items..metadata.name})" -c sleep -n foo -- curl -XPOST "http://httpbin.foo:8000/post" -H "x-ext-authz: allow" -H "key2: value2" --header 'Content-Type: text/plain' --data '1234567890111111'
+
+    ```
+
+### Clean up
+    ```
+    $ kubectl delete -f ./envoyfilter-ext-authz-httpservice.yaml
+
+    ```
+
 ## Enabled Debug And Test again
 - In order to better understand how it works, suggest you [enable debug](https://github.com/johnzheng1975/istiocon2023/tree/main/samples/AuthenticationAndAuthorization#enable-debug-before-go-through-samples) for below `Advanaced usage` try.
 
