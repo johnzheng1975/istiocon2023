@@ -31,15 +31,6 @@ This sample is about External Authorization usage.
           packAsBytes: false
 ```
 
-## Introduction from its developer
-- Video 
-  * https://www.youtube.com/watch?v=BSmckzCAuk8
-- PDF
-  * https://events.istio.io/istiocon-2021/slides/g8p-BetterExternalAuthorization-YangminZhu.pdf
-- Design docs
-  * https://docs.google.com/document/d/1V4mCQCw7mlGp0zSQQXYoBdbKMDnkPOjeyUb85U07iSI
- 
-
 ## Best Practice
 Here are some thoughts/ tips for ext-authz envoyfilter:
 
@@ -223,3 +214,10 @@ Here are some thoughts/ tips for ext-authz envoyfilter:
    
    Suggest you [enable debug log](../readme.md), during your testing.
    
+## Introduction from Istio developer
+- Video 
+  * https://www.youtube.com/watch?v=BSmckzCAuk8
+- PDF
+  * https://events.istio.io/istiocon-2021/slides/g8p-BetterExternalAuthorization-YangminZhu.pdf
+- Design docs
+  * https://docs.google.com/document/d/1V4mCQCw7mlGp0zSQQXYoBdbKMDnkPOjeyUb85U07iSI
