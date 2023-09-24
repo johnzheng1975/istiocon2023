@@ -67,7 +67,7 @@ Here are some thoughts/ tips for ext-authz envoyfilter:
 
 1. Comparing with ext-authz envoyfilter, it can support ext-authz flow conditionally, enable/disable for a specific route based on path/host/IP/etc. 
 
-2. This feature is similar or even based on ext-authz envoyfilter. But more convenience.
+2. This feature is similar with ext-authz envoyfilter, also based in ext-authz envoyfilter. But more convenience.
 
 3. The main configuration is in istio configmap, like below
    ```
@@ -102,10 +102,10 @@ Here are some thoughts/ tips for ext-authz envoyfilter:
 5. It supports envoyExtAuthzGrpc or envoyExtAuthzHttp.
 
 6. For envoyExtAuthzHttp, you can define 
-   - includeRequestHeadersInCheck (It can be forwarded to authz server. Same as allowed_headers in envoyfilter.)
-   - headersToUpstreamOnAllow (It is from the authorization service, will be added or overridden in the original request and forwarded to the upstream. Same as allowed_upstream_headers in envoyfilter.)
+   - includeRequestHeadersInCheck (Headers can be forwarded to authz server. Same as allowed_headers in envoyfilter.)
+   - headersToUpstreamOnAllow (The headers from ext-authz service, will be added or overridden in the original request and forwarded to the upstream. Same as allowed_upstream_headers in envoyfilter.)
    
-7. For envoyExtAuthzGrpc, you cannot define includeRequestHeadersInCheck or headersToUpstreamOnAllow. All headers will be included. This may impact the performance.
+7. For envoyExtAuthzGrpc, you cannot define includeRequestHeadersInCheck or headersToUpstreamOnAllow. All headers will be forwarded. This may impact the performance.
 
 8. External authorizer can return allow or deny based on request body, if you define includeRequestBodyInCheck below. it works for both grpc_service and http_service. 
 
@@ -122,7 +122,7 @@ Here are some thoughts/ tips for ext-authz envoyfilter:
    ```
    $ kubectl exec -ti "$(kubectl get pod -l app=httpbin -n foo -o jsonpath={.items..metadata.name})"  -n foo -c istio-proxy -- curl localhost:15000/config_dump
    
-   $ For the upper envoyExtAuthzGrpc configure, final envoyfilter like:
+   $ For the upper envoyExtAuthzGrpc configure, will generate final envoyfilter like:
              {
               "name": "envoy.filters.http.ext_authz",
               "typed_config": {
@@ -155,7 +155,7 @@ Here are some thoughts/ tips for ext-authz envoyfilter:
              },
 
 
-   $ For the upper envoyExtAuthzHttp configure, final envoyfilter like:
+   $ For the upper envoyExtAuthzHttp configure, will generate final envoyfilter like:
              {
               "name": "envoy.filters.http.ext_authz",
               "typed_config": {
@@ -216,7 +216,7 @@ Here are some thoughts/ tips for ext-authz envoyfilter:
    apiVersion: security.istio.io/v1
    kind: AuthorizationPolicy
    metadata:
-     name: ext-authz
+     name: ext-authz-grpc
    spec:
      selector:
        matchLabels:
@@ -230,7 +230,7 @@ Here are some thoughts/ tips for ext-authz envoyfilter:
      # The rules specify when to trigger the external authorizer.
      - to:
        - operation:
-           paths: ["/headers"]
+           paths: ["/post"]
    ```
 
 11. Test 
@@ -242,9 +242,7 @@ Here are some thoughts/ tips for ext-authz envoyfilter:
    # allow case
    $ kubectl exec "$(kubectl get pod -l app=sleep -n foo -o jsonpath={.items..metadata.name})" -c sleep -n foo -- curl -XPOST "http://httpbin.foo:8000/post" -H "x-ext-authz: allow" -H "key2: value2" --header 'Content-Type: text/plain' --data '1234567890111111'
    ```
-   
-   Suggest you [enable debug log](../readme.md), during your testing.
-   
+
 ## Introduction from Istio developer
 - Video 
   * https://www.youtube.com/watch?v=BSmckzCAuk8
