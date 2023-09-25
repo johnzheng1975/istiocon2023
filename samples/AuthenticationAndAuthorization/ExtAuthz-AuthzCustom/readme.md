@@ -105,8 +105,8 @@ Here are some thoughts/ tips for ext-authz envoyfilter:
 5. It supports envoyExtAuthzGrpc or envoyExtAuthzHttp.
 
 6. For envoyExtAuthzHttp, you can define 
-   - includeRequestHeadersInCheck (Headers can be forwarded to authz server. Same as allowed_headers in envoyfilter.)
-   - headersToUpstreamOnAllow (The headers from ext-authz service, will be added or overridden in the original request and forwarded to the upstream. Same as allowed_upstream_headers in envoyfilter.)
+   - includeRequestHeadersInCheck (Headers can be forwarded to authz server. Same as allowed_headers in ext-authz envoyfilter.)
+   - headersToUpstreamOnAllow (The headers from ext-authz service, will be added or overridden in the original request and forwarded to the upstream. Same as allowed_upstream_headers in ext-authz envoyfilter.)
    
 7. For envoyExtAuthzGrpc, you cannot define includeRequestHeadersInCheck or headersToUpstreamOnAllow. All headers will be forwarded. This may impact the performance.
 
