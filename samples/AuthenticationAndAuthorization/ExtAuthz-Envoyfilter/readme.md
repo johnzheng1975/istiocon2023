@@ -63,7 +63,8 @@ First, you need to deploy ext-authz envoyfilter.
       envoyfilter.networking.istio.io/httpbin created
       envoyfilter.networking.istio.io/ext-authz-cluster-patch created
     ```
-
+2. Wait some seconds, before testing. Make sure envoyfitler is synced to istio-proxy.
+   
 ### Test
 Here is test result:
 
