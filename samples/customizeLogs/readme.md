@@ -28,7 +28,7 @@ This sample is about customize logs, adding tenant_id, grpc_status.
        accessLogEncoding: JSON
        accessLogFile: /dev/stdout
        accessLogFormat: |
-         {
+          {
               "authority": "%REQ(:AUTHORITY)%",
               "bytes_received": "%BYTES_RECEIVED%",
               "bytes_sent": "%BYTES_SENT%",
