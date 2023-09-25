@@ -75,7 +75,7 @@ Here is test result:
     denied by ext_authz for not found header `x-ext-authz: allow` in the request
     ```
 
-1. Verify a request to path `/headers` with header `x-ext-authz: allow` is allowed by the sample `ext_authz` server:
+1. Verify a request to path `/post` with header `x-ext-authz: allow` is allowed by the sample `ext_authz` server:
     ```
     $ kubectl exec "$(kubectl get pod -l app=sleep -n foo -o jsonpath={.items..metadata.name})" -c sleep -n foo -- curl -XPOST "http://httpbin.foo:8000/post" -H "x-ext-authz: allow" -H "key2: value2" --header 'Content-Type: text/plain' --data '1234567890111111'
     {
@@ -135,7 +135,7 @@ Here is test result:
     denied by ext_authz for not found header `x-ext-authz: allow` in the request
     ```
 
-1. Verify a request to path `/headers` with header `x-ext-authz: allow` is allowed by the sample `ext_authz` server:
+1. Verify a request to path `/post` with header `x-ext-authz: allow` is allowed by the sample `ext_authz` server:
     ```
     $ kubectl exec "$(kubectl get pod -l app=sleep -n foo -o jsonpath={.items..metadata.name})" -c sleep -n foo -- curl -XPOST "http://httpbin.foo:8000/post" -H "x-ext-authz: allow" -H "key2: value2" --header 'Content-Type: text/plain' --data '1234567890111111'
     {
