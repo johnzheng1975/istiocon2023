@@ -179,13 +179,13 @@ Here is test result:
 
 Here are some thoughts/ tips for ext-authz envoyfilter:
 
-1. For technical details for envoy ext-authz envoyfilter, you can refer to:
-   https://www.envoyproxy.io/docs/envoy/latest/api-v3/extensions/filters/http/ext_authz/v3/ext_authz.proto#envoy-v3-api-msg-extensions-filters-http-ext-authz-v3-extauthz
+1. For technical details of envoy ext-authz envoyfilter, you can refer to:
+   - https://www.envoyproxy.io/docs/envoy/latest/api-v3/extensions/filters/http/ext_authz/v3/ext_authz.proto#envoy-v3-api-msg-extensions-filters-http-ext-authz-v3-extauthz
 
 2. You can use grpc_service or http_service for external authorizer.
 
 3. External authorizer can return allow or deny based on request headers. So http headers need be forwarded to External authorizer.
-   - For http_service, for headers need be forwareded, please them in allowed_headers. Otherwise, will not be forwarded.
+   - For http_service, for headers need be forwareded, please put them in allowed_headers. Otherwise, will not be forwarded.
    - For grpc_service, all headers will be forwarded if allowed_headers is not defined. However, if allowed_headers is defined, the other headers will not be forwarded.
 
 4. External authorizer can return allow or deny based on request body. Below works for both grpc_service and http_service
@@ -218,7 +218,7 @@ Here are some thoughts/ tips for ext-authz envoyfilter:
 
 ## Envoyfilter sample
 
-### Simple grpc_service
+### grpc_service
 - Body will be forwarded to external authorizer.
 - All headers will be forwarded to external authorizer.
 ```
@@ -258,6 +258,7 @@ spec:
             allow_partial_message: true
             pack_as_bytes: false
 ---
+# Below is not necessary, here is just a sample.
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
