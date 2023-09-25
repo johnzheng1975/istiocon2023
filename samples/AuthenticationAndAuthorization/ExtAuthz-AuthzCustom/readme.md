@@ -71,6 +71,9 @@ Here are some thoughts/ tips for ext-authz envoyfilter:
 
 3. The main configuration is in istio configmap, like below
    ```
+   # There are many comments below.
+   # For Useful, this means you can set
+   # For Not Useful, means does not support this.
    mesh: |-
      extensionProviders:
      - name: "sample-ext-authz-grpc"
