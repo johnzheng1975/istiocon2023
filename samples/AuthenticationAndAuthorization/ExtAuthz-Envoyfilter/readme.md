@@ -173,7 +173,7 @@ Here is test result:
   ```
 
 ## Enabled Debug And Test again
-- In order to better understand how it works, suggest you [enable debug](https://github.com/johnzheng1975/istiocon2023/tree/main/samples/AuthenticationAndAuthorization#enable-debug-before-go-through-samples) for below `Advanaced usage` try.
+- In order to better understand how it works, suggest you [enable debug](https://github.com/johnzheng1975/istiocon2023/tree/main/samples/AuthenticationAndAuthorization#enable-debug-before-go-through-samples) and test again.
 
 ## Advanced usage
 
