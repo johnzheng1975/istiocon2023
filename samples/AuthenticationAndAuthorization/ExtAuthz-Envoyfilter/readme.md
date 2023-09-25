@@ -336,9 +336,10 @@ spec:
 
 1. Remove the namespace `foo` from your configuration:
 
-    ```
-    $ kubectl delete namespace foo
-    ```
+   ```
+   ~/istiocon2023/samples/AuthenticationAndAuthorization/ExtAuthz-Envoyfilter$  kubectl delete -f ./envoyfilter-ext-authz-grpcservice.yaml
+   ~/istiocon2023/samples/AuthenticationAndAuthorization/ExtAuthz-Envoyfilter$  kubectl delete -f ./envoyfilter-ext-authz-httpservice.yaml
+   ```
 
 
  
