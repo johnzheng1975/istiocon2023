@@ -108,12 +108,13 @@ Here is test result:
     ```
 
 ### Clean up
-    ```
-    $ kubectl delete -f ./envoyfilter-ext-authz-grpcservice.yaml
-    envoyfilter.networking.istio.io "httpbin" deleted
-    envoyfilter.networking.istio.io "ext-authz-cluster-patch" deleted
-    ```
-
+- Run below command.
+  ```
+  $ kubectl delete -f ./envoyfilter-ext-authz-grpcservice.yaml
+  envoyfilter.networking.istio.io "httpbin" deleted
+  envoyfilter.networking.istio.io "ext-authz-cluster-patch" deleted
+  ```
+    
 ## httpservice envoyfilter
 ### Deploy the ext-authz envoyfilter (httpservice)
 
@@ -168,7 +169,6 @@ Here is test result:
 ### Clean up
     ```
     $ kubectl delete -f ./envoyfilter-ext-authz-httpservice.yaml
-
     ```
 
 ## Enabled Debug And Test again
