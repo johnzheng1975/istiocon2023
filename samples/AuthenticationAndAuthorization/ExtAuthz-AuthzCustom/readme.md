@@ -121,7 +121,7 @@ Here are some thoughts/ tips for ext-authz envoyfilter:
 
    Similar with with_request_body in envoyfilter.
 
-9. For upper mesh configuration, the envoyfilter is generated as below:
+9. For upper mesh configuration, the envoyfilter is generated in istio-proxy as below finally:
    ```
    $ kubectl exec -ti "$(kubectl get pod -l app=httpbin -n foo -o jsonpath={.items..metadata.name})"  -n foo -c istio-proxy -- curl localhost:15000/config_dump
    
