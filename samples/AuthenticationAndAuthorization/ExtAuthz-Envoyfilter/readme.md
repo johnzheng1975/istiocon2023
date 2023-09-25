@@ -167,9 +167,10 @@ Here is test result:
     ```
 
 ### Clean up
-    ```
-    $ kubectl delete -f ./envoyfilter-ext-authz-httpservice.yaml
-    ```
+- Run below command.
+  ```
+  $ kubectl delete -f ./envoyfilter-ext-authz-httpservice.yaml
+  ```
 
 ## Enabled Debug And Test again
 - In order to better understand how it works, suggest you [enable debug](https://github.com/johnzheng1975/istiocon2023/tree/main/samples/AuthenticationAndAuthorization#enable-debug-before-go-through-samples) for below `Advanaced usage` try.
