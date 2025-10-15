@@ -1,0 +1,58 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: apigee-x-connector-debug
+  namespace: apimanagement-dev
+spec:
+  workloadSelector:
+    labels:
+      app: apigee-x-connector
+  configPatches:
+  - applyTo: HTTP_FILTER
+    match:
+      context: ANY
+      listener:
+        filterChain:
+          filter:
+            name: envoy.filters.network.http_connection_manager
+            subFilter:
+              # 👇 Change from 'envoy.filters.http.router' to 'envoy.filters.http.rbac'
+              # so the Lua filter executes *before* RBAC rejects requests
+              name: envoy.filters.http.rbac
+    patch:
+      operation: INSERT_BEFORE
+      value:
+        name: envoy.lua
+        typed_config:
+          "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
+          inlineCode: |
+            function envoy_on_request(request_handle)
+              request_handle:logInfo("******* Enter debug logs - envoy_on_request")
+              request_handle:logInfo("******* request header")
+              local headers = request_handle:headers()
+              for key, value in pairs(headers) do
+                request_handle:logInfo(key .. ": " .. value)
+              end
+
+              -- Try to read request body
+              request_handle:logInfo("******* request body")
+              for chunk in request_handle:bodyChunks() do
+                local data = chunk:getBytes(0, chunk:length())
+                request_handle:logInfo(data)
+              end
+            end
+
+            function envoy_on_response(response_handle)
+              response_handle:logInfo("******* Enter debug logs - envoy_on_response")
+              response_handle:logInfo("******* response header")
+              local headers = response_handle:headers()
+              for key, value in pairs(headers) do
+                response_handle:logInfo(key .. ": " .. value)
+              end
+
+              response_handle:logInfo("******* response body")
+              for chunk in response_handle:bodyChunks() do
+                local data = chunk:getBytes(0, chunk:length())
+                response_handle:logInfo(data)
+              end
+            end
